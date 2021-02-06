@@ -1,0 +1,65 @@
+{% extends "navbar.html" %}
+{% load crispy_forms_tags %}
+
+{% block title_block %}
+{{user.user_profile.full_name|upper}} (@{{user.username}})
+{% endblock  %}
+
+{% block body_block %}
+<h1 class="mt-5 text-center"> Your Profile </h1>
+<div class="row my-5">
+  <div class="col-sm-4">
+    {% if user.user_profile.profile_pic %}
+    <img src="/media/{{user.user_profile.profile_pic}}" title="{{user.username}}" width="300" height="300"
+      alt="{{user.username}}" loading="lazy" class='rounded-circle'>
+    {% else %}
+    <img src="/media/profile_pics/avatar.jpg" class='rounded-circle' title="{{user.username}}" width="300" height="300"
+      alt="{{user.username}}" loading="lazy">
+    {% endif %}
+    <button type="button" class="btn btn-dark my-3 mx-auto" data-toggle="modal" data-target="#exampleModal">
+      Click Here to Post
+    </button>
+  </div>
+  <div class="col-sm-8 text-center">
+    <h4>Username- {{user.username}} <a href="{% url 'App_Login:edit' %}" class="btn btn-outline-info btn-sm">Edit
+        Profile</a> </h4>
+    <h4> {{user.post_author.count}} posts &nbsp;&nbsp; {{user.follower.count}} Following &nbsp;&nbsp;
+      {{user.following.count}} Follower </h4>
+    <h6> {{user.user_profile.description|linebreaks}} </h6>
+  </div>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create A New Post to Post </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" enctype="multipart/form-data">
+            {{form|crispy}}
+            {% csrf_token %}
+            <input type="submit" value="POST" class='btn btn-info btn-lg'>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-lg" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row my-5">
+    {% for posts in user.post_author.all %}
+    <div class="card mb-5">
+      <img src="/media/{{posts.post_image}}" class="card-img-top" alt="{{posts.caption}}" width="350" height='350' style="object-fit: cover;" >
+      <div class="card-body">
+        <b class="card-text">{{posts.caption}}</b>
+        <p class="card-text"><small class="text-muted">Uploaded at - {{posts.upload_date}}</small></p>
+      </div>
+    </div> {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

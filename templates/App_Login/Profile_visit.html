@@ -1,0 +1,45 @@
+{% extends "navbar.html" %}
+{% load crispy_forms_tags %}
+
+{% block title_block %}
+{{user_other.user_profile.full_name|upper}} (@{{user_other.username}})
+{% endblock  %}
+
+{% block body_block %}
+<h1 class="mt-5 text-center"> Visit {{user_other.username}}'s Profile </h1>
+<div class="row my-5">
+  <div class="col-sm-4">
+    {% if user_other.user_profile.profile_pic %}
+    <img src="/media/{{user_other.user_profile.profile_pic}}" title="{{user_other.username}}" width="300" height="300"
+      alt="{{user_other.username}}" loading="lazy" class='rounded-circle'>
+    {% else %}
+    <img src="/media/profile_pics/avatar.jpg" class='rounded-circle' title="{{user_other.username}}" width="300" height="300"
+      alt="{{user_other.username}}" loading="lazy">
+    {% endif %}
+  </div>
+  <div class="col-sm-8 text-center">
+    <h4>Username- {{user_other.username}}</h4>
+    <h4> {{user_other.post_author.count}} posts &nbsp;&nbsp; {{user_other.follower.count}} Following &nbsp;&nbsp;
+      {{user_other.following.count}} Follower </h4>
+    <h6> {{user_other.user_profile.description|linebreaks}} </h6>
+    {% if already_followed %}
+    <a href="{% url 'App_Login:unfollow' username=user_other.username %}" class="btn btn-danger" >UnFollow </a>
+    {% else %}
+    <a href="{% url 'App_Login:follow' username=user_other.username %}" class="btn btn-info" >Follow </a>
+    {% endif %}
+  </div>
+  </div>
+
+  <div class="row my-5">
+    {% for posts in user_other.post_author.all %}
+    <div class="card mb-5">
+      <img src="/media/{{posts.post_image}}" class="card-img-top" alt="{{posts.caption}}" width="350" height='350' style="object-fit: cover;" >
+      <div class="card-body">
+        <b class="card-text">{{posts.caption}}</b>
+        <p class="card-text"><small class="text-muted">Uploaded at - {{posts.upload_date}}</small></p>
+      </div>
+    </div> {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

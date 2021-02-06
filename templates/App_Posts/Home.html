@@ -1,0 +1,68 @@
+{% extends "navbar.html" %}
+{% block title_block %}
+Home
+{% endblock  %}
+
+{% block body_block %}
+{% if search %}
+{%  for user in result %}
+<div class="row my-5">
+  <div class="col-md-2">
+    {% if user.user_profile.profile_pic %}
+    <img src="/media/{{user.user_profile.profile_pic}}" title="{{user.username}}" width="70" height="70"
+      alt="{{user.username}}" loading="lazy" class='rounded-circle'>
+    {% else %}
+    <img src="/media/profile_pics/avatar.jpg" class='rounded-circle' title="{{user.username}}" width="70" height="70"
+      alt="{{user.username}}" loading="lazy">
+    {% endif %}
+  </div>
+  <div class="col-md-10 text-center">
+    <h4><a href="{% url 'App_Login:visit_user' username=user.username %}">{{user.username}}</a> </h4>
+    <h6> {{user.user_profile.full_name}} </h6>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+
+{% for posts in posts %}
+<br>
+<!-- <img src=  width="350" height='350' style="object-fit: cover;"> -->
+<div class="card mt-3 mb-2" style="width: 60rem;">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-4">
+        {% if posts.author.user_profile.profile_pic %}
+        <a href="{% url 'App_Login:visit_user' username=posts.author.username %}">
+          <img src="/media/{{posts.author.user_profile.profile_pic}}" title="{{posts.author.username}}" width="30" height="30"
+          alt="{{user.username}}" loading="lazy" class='rounded-circle'>
+        </a>
+    {% else %}
+    <a href="{% url 'App_Login:visit_user' username=posts.author.username %}">
+      <img src="/media/profile_pics/avatar.jpg" class='rounded-circle' title="{{user.username}}" width="30" height="30"
+      alt="{{user.username}}" loading="lazy">
+    </a>
+    {% endif %}
+      </div>
+      <div class="col-md-8 d-flex justify-content-between">
+        <a href="{% url 'App_Login:visit_user' username=posts.author.username %}">
+          {{posts.author}}
+        </a>
+        {{posts.upload_date|date:"d N P" }}
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <p class='my-3' style="font-size: 21px;"><b> {{posts.caption}} </b> </p>
+    <img src="/media/{{posts.post_image}}" class="card-img-top" alt="{{posts.caption}}" style="object-fit: cover;">
+  </div>
+  <div class="card-footer">
+    {% if posts.pk in liked_posts %}
+    <a href="{% url 'App_Posts:unlike' pk=posts.pk %}"><i class="fas fa-heart fa-2x"></i> </a> 
+    {% else %}
+    <a href="{% url 'App_Posts:like' pk=posts.pk %}"> <i class="far fa-heart fa-2x"></i></a> 
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}
