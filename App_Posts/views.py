@@ -9,23 +9,24 @@ from .models import Posts,Like
 from django.urls import reverse
 
 
-
-
 # Create your views here.
 
 
 @login_required
 def home(request):
     following_list=Follow.objects.filter(follower=request.user)
+    your_posts = Posts.objects.filter(author=request.user)
     posts=Posts.objects.filter(author__in=following_list.values_list('following'))
     liked_post=Like.objects.filter(user=request.user)
     liked_post_list=liked_post.values_list('post',flat=True)
+    # Combine your posts and followers' posts
+    combined_posts = your_posts | posts
     if request.method=='GET':
         search=request.GET.get('search','')
         result=User.objects.filter(username__icontains=search)
-        return render(request,'App_Posts/Home.html',context={'search':search,'result':result,'posts':posts,'liked_posts':liked_post_list})
-    
-    
+        return render(request,'App_Posts/Home.html',context={'search':search,'result':result,'posts':combined_posts,'liked_posts':liked_post_list})
+
+
 @login_required
 def liked(request,pk):
     post=Posts.objects.get(pk=pk)
@@ -34,11 +35,10 @@ def liked(request,pk):
         liked_post=Like(post=post,user=request.user)
         liked_post.save()
         return HttpResponseRedirect(reverse('App_Posts:index'))
-    
+
 @login_required
 def unliked(request,pk):
     post=Posts.objects.get(pk=pk)
     already_liked=Like.objects.filter(post=post,user=request.user)
     already_liked.delete()
     return HttpResponseRedirect(reverse('App_Posts:index'))
-    

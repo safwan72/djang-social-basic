@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,27 +22,27 @@ MEDIA_DIR = BASE_DIR/'media'
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = "p5$-uq!3n)tgn1w62xp1-r)p308o7&c1m8olfbd#hpozc%iqxd"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+DEBUG = True
 
-
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'App_Posts',
-    'App_Login',
-    'crispy_forms',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "App_Posts",
+    "App_Login",
+    "crispy_forms",
+    "crispy_bootstrap4",
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -125,7 +124,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIR = [STATIC_DIR, ]
+STATIC_ROOT = BASE_DIR/'static'
+
 
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
